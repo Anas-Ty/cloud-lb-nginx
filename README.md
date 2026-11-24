@@ -85,6 +85,7 @@ Allow local script execution for the current terminal session (if restricted) an
 PowerShell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\demo.ps1
+![Interactive PowerShell CLI menu screenshot](assets/demo-menu.png)
 Choose any scenario (1 through 7) to automatically deploy the topology, reload NGINX, execute requests, and measure latency:Menu OptionArchitectureAlgorithm / TestExpected Behavior1CentralizedRound Robin (Static)Rotates sequentially across Backend-Server-1 -> 2 -> 3.2CentralizedWeighted Round Robin (Static)Sends roughly 60% of requests to web1 (weight=3) and 20% each to web2/web3 (weight=1).3CentralizedIP Hash (Static)Hashes the client IP so requests from the same client stick to one backend.4CentralizedLeast Connections (Dynamic)Launches two 2-second /slow tasks and routes incoming fast requests to the idle server.5CentralizedBackend FailoverStops web2; NGINX detects the failure and routes incoming traffic to web1 and web3.6DistributedMulti-LB Edge RoutingSpins up edge-router distributing traffic across lb-zone-a and lb-zone-b.7DistributedLB High Availability TestStops lb-zone-a; edge-router automatically fails over to lb-zone-b.Option B: Manual Docker Compose Execution (Windows / Linux / macOS)Start the Centralized Cluster:
 Bash
 docker compose up -d --build
