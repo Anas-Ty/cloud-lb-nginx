@@ -1,0 +1,55 @@
+services:
+  web1:
+    build: ./backend
+    container_name: web1
+    environment:
+      - SERVER_NAME=Backend-Server-1
+    networks:
+      - cloud_net
+  web2:
+    build: ./backend
+    container_name: web2
+    environment:
+      - SERVER_NAME=Backend-Server-2
+    networks:
+      - cloud_net
+  web3:
+    build: ./backend
+    container_name: web3
+    environment:
+      - SERVER_NAME=Backend-Server-3
+    networks:
+      - cloud_net
+  lb-zone-a:
+    image: nginx:alpine
+    container_name: lb-zone-a
+    ports:
+      - "8081:80"
+    volumes:
+      - ./nginx/4_least_conn.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - cloud_net
+  lb-zone-b:
+    image: nginx:alpine
+    container_name: lb-zone-b
+    ports:
+      - "8082:80"
+    volumes:
+      - ./nginx/1_round_robin.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - cloud_net
+  edge-router:
+    image: nginx:alpine
+    container_name: edge-router
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/edge_distributed.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - lb-zone-a
+      - lb-zone-b
+    networks:
+      - cloud_net
+networks:
+  cloud_net:
+    driver: bridge
